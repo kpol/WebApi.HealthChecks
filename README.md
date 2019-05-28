@@ -61,4 +61,4 @@ The framework supports theree statuses: `Unhealthy`, `Degraded` and `Healthy`.
 }
 ```
 The `api/health/ui?check={check-name}` endpoint returns a SVG badge which shows individual status of the service component.
-For example `api/health/ui?check=check5` will output this image: ![GitHub Logo](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)
+For example `api/health/ui?check=check5` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)

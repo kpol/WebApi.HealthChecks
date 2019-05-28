@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\status-degraded-lightgrey.svg" />
+    <None Remove="Content\status-healthy-green.svg" />
+    <None Remove="Content\status-unhealthy-red.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\status-degraded-lightgrey.svg" />
+    <EmbeddedResource Include="Content\status-healthy-green.svg" />
+    <EmbeddedResource Include="Content\status-unhealthy-red.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
+  </ItemGroup>
+
+</Project>

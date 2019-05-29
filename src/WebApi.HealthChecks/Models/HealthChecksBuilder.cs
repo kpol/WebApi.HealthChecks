@@ -51,9 +51,23 @@ namespace WebApi.HealthChecks
                 }
             }
 
-            healthCheckResults.Status = healthCheckResults.Entries.Values.All(c => c.Status == HealthStatus.Healthy)
-                ? HealthStatus.Healthy
-                : HealthStatus.Unhealthy;
+            var status = HealthStatus.Healthy;
+
+            foreach (var healthCheckResultExtended in healthCheckResults.Entries.Values)
+            {
+                if (healthCheckResultExtended.Status == HealthStatus.Unhealthy)
+                {
+                    status = HealthStatus.Unhealthy;
+                    break;
+                }
+
+                if (healthCheckResultExtended.Status == HealthStatus.Degraded)
+                {
+                    status = HealthStatus.Degraded;
+                }
+            }
+
+            healthCheckResults.Status = status;
             healthCheckResults.TotalResponseTime = healthCheckResults.Entries.Values.Sum(c => c.ResponseTime);
 
             return healthCheckResults;

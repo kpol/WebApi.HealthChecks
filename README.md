@@ -19,8 +19,8 @@ public static class WebApiConfig
     public static void Register(HttpConfiguration config)
     {
         config.AddHealthChecks()
-            .AddCheck("Sql Db", new SqlHealthCheck())
-            .AddCheck("Cosmos Db", new CosmosDbHealthCheck());
+            .AddCheck("sqlDb", new SqlHealthCheck())
+            .AddCheck("cosmosDb", new CosmosDbHealthCheck());
     }
 }
 ```
@@ -40,11 +40,11 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
   "status": "Unhealthy",
   "totalResponseTime": 0,
   "entries": {
-    "sql Db": {
+    "sqlDb": {
       "responseTime": 8,
       "status": "Healthy"
     },
-    "cosmos Db": {
+    "cosmosDb": {
       "responseTime": 5,
       "status": "Degraded"
     }
@@ -52,4 +52,4 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
 }
 ```
 The `/health/ui?check={check-name}` endpoint returns a SVG badge which shows individual status of the service component.
-For example `/health/ui?check=cosmos db` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)
+For example `/health/ui?check=cosmosDb` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)

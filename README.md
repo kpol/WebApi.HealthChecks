@@ -7,10 +7,10 @@ WebApi.HealthChecks offers a **WebApi** implementation of the health check endpo
 The package is available on **NuGet**: [https://www.nuget.org/packages/WebApi.HealthChecks](https://www.nuget.org/packages/WebApi.HealthChecks)
 
 Health checks are exposed by an app as HTTP endpoints.
-Supports two endpoints: `api/health` and `api/health/ui?check={check-name}`
+Supports two endpoints: `/health` and `/health/ui?check={check-name}`
 
 
-In the sample app, the health check endpoint is created at `api/health`
+In the sample app, the health check endpoint is created at `/health`
 ```
 public static class WebApiConfig
 {
@@ -40,7 +40,7 @@ public interface IHealthCheck
 ```
 The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
 
-`GET api/health` returns json in the following format:
+`GET /health` returns json in the following format:
 ```
 {
   "status": "Unhealthy",
@@ -64,5 +64,5 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
   }
 }
 ```
-The `api/health/ui?check={check-name}` endpoint returns a SVG badge which shows individual status of the service component.
-For example `api/health/ui?check=check5` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)
+The `/health/ui?check={check-name}` endpoint returns a SVG badge which shows individual status of the service component.
+For example `/health/ui?check=check5` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)

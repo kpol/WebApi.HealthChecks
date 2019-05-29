@@ -2,7 +2,7 @@
 
 WebApi.HealthChecks offers a **WebApi** implementation of the health check endpoints for reporting the health of app infrastructure components.
 
-The packaga is available on **NuGet**: [https://www.nuget.org/packages/WebApi.HealthChecks](https://www.nuget.org/packages/WebApi.HealthChecks)
+The package is available on **NuGet**: [https://www.nuget.org/packages/WebApi.HealthChecks](https://www.nuget.org/packages/WebApi.HealthChecks)
 
 Health checks are exposed by an app as HTTP endpoints.
 Supports two endpoints: `api/health` and `api/health/ui?check={check-name}`
@@ -29,14 +29,14 @@ public static class WebApiConfig
 }
 ```
 
-Every health cheack must implement `IHealthCheck` interface
+Every health check must implement `IHealthCheck` interface
 ```
 public interface IHealthCheck
 {
     Task<HealthCheckResult> CheckHealthAsync();
 }
 ```
-The framework supports theree statuses: `Unhealthy`, `Degraded` and `Healthy`.
+The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
 
 `GET api/health` returns json in the following format:
 ```

@@ -7,7 +7,9 @@ WebApi.HealthChecks offers a **WebApi** implementation of the health check endpo
 The package is available on **NuGet**: [https://www.nuget.org/packages/WebApi.HealthChecks](https://www.nuget.org/packages/WebApi.HealthChecks)
 
 Health checks are exposed by an app as HTTP endpoints.
-Supports two endpoints: `/health` and `/health/ui?check={check-name}`
+Supports two endpoints: 
+- `/health`
+- `/health/ui?check={check-name}`
 
 
 In the sample app, the health check endpoint is created at `/health`

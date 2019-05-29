@@ -18,8 +18,7 @@ public static class WebApiConfig
 {
     public static void Register(HttpConfiguration config)
     {
-        config
-            .AddHealthChecks()
+        config.AddHealthChecks()
             .AddCheck("check1", new HealthyCheck())
             .AddCheck("check2", new UnhealthyCheck())
             .AddCheck("check3", new ExceptionHealthCheck())

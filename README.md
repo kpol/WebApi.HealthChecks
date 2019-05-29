@@ -12,17 +12,15 @@ Supports two endpoints:
 - `/health/ui?check={check-name}`
 
 
-In the sample app, the health check endpoint is created at `/health`
+By default the health check endpoint is created at `/health`
 ```
 public static class WebApiConfig
 {
     public static void Register(HttpConfiguration config)
     {
         config.AddHealthChecks()
-            .AddCheck("check1", new HealthyCheck())
-            .AddCheck("check2", new UnhealthyCheck())
-            .AddCheck("check3", new ExceptionHealthCheck())
-            .AddCheck("check5", new DegradedHealthCheck());
+            .AddCheck("Sql Db", new SqlHealthCheck())
+            .AddCheck("Cosmos Db", new CosmosDbHealthCheck());
     }
 }
 ```
@@ -42,23 +40,16 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
   "status": "Unhealthy",
   "totalResponseTime": 0,
   "entries": {
-    "check1": {
-      "responseTime": 0,
+    "sql Db": {
+      "responseTime": 8,
       "status": "Healthy"
     },
-    "check2": {
-      "responseTime": 0,
-      "status": "Unhealthy"
-    },
-    "check3": {
-      "status": "Unhealthy"
-    },
-    "check5": {
-      "responseTime": 0,
+    "cosmos Db": {
+      "responseTime": 5,
       "status": "Degraded"
     }
   }
 }
 ```
 The `/health/ui?check={check-name}` endpoint returns a SVG badge which shows individual status of the service component.
-For example `/health/ui?check=check5` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)
+For example `/health/ui?check=sql db` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)

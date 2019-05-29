@@ -37,7 +37,7 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
 `GET /health` returns json in the following format:
 ```
 {
-  "status": "Unhealthy",
+  "status": "Degraded",
   "totalResponseTime": 13,
   "entries": {
     "sqlDb": {

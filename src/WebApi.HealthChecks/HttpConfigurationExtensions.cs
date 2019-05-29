@@ -5,7 +5,7 @@ namespace WebApi.HealthChecks
 {
     public static class HttpConfigurationExtensions
     {
-        public static HealthChecksBuilder AddHealthChecks(this HttpConfiguration httpConfiguration, string routeTemplate = "api/health")
+        public static HealthChecksBuilder AddHealthChecks(this HttpConfiguration httpConfiguration, string routeTemplate = "health")
         {
             var healthChecksBuilder = new HealthChecksBuilder();
 

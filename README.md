@@ -38,7 +38,7 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
 ```
 {
   "status": "Unhealthy",
-  "totalResponseTime": 0,
+  "totalResponseTime": 13,
   "entries": {
     "sqlDb": {
       "responseTime": 8,

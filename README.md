@@ -54,7 +54,7 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
     "lambda": {
       "responseTime": 0,
       "status": "Healthy",
-       "description": "Lambda check"
+      "description": "Lambda check"
     }
   }
 }

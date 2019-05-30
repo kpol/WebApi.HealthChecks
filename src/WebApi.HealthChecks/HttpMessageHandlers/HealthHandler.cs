@@ -5,21 +5,22 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.HealthChecks.Models;
+using WebApi.HealthChecks.Services;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
     internal class HealthHandler : HttpMessageHandler
     {
-        private readonly HealthChecksBuilder _healthChecksBuilder;
+        private readonly IHealthCheckService _healthCheckService;
 
         private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
-        public HealthHandler(HealthChecksBuilder healthChecksBuilder)
+        public HealthHandler(IHealthCheckService healthCheckService)
         {
-            _healthChecksBuilder = healthChecksBuilder;
+            _healthCheckService = healthCheckService;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -29,13 +30,13 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 throw new HttpRequestException("The method accepts only GET requests.");
             }
 
-            var result = await _healthChecksBuilder.GetHealthAsync();
+            var result = await _healthCheckService.GetHealthAsync();
 
             var httpResponseMessage = new HttpResponseMessage
             {
                 Content = new ObjectContent<HealthCheckResults>(result,
                     new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings}),
-                StatusCode = _healthChecksBuilder.ResultStatusCodes[result.Status]
+                StatusCode = _healthCheckService.GetStatusCode(result.Status)
             };
 
             return httpResponseMessage;

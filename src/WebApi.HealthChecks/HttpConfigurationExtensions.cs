@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using WebApi.HealthChecks.HttpMessageHandlers;
+using WebApi.HealthChecks.Services;
 
 namespace WebApi.HealthChecks
 {
@@ -14,7 +15,7 @@ namespace WebApi.HealthChecks
                 routeTemplate: routeTemplate,
                 defaults: null,
                 constraints: null,
-                handler: new HealthHandler(healthChecksBuilder)
+                handler: new HealthHandler(new HealthCheckService(healthChecksBuilder))
             );
 
             var ui = routeTemplate + (routeTemplate.EndsWith("/") ? string.Empty : "/") + "ui";
@@ -24,7 +25,7 @@ namespace WebApi.HealthChecks
                 routeTemplate: ui,
                 defaults: null,
                 constraints: null,
-                handler: new HealthUiHandler(healthChecksBuilder)
+                handler: new HealthUiHandler(new HealthCheckService(healthChecksBuilder))
             );
 
             return healthChecksBuilder;

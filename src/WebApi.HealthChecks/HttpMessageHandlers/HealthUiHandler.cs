@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApi.HealthChecks.Services;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
@@ -14,11 +15,11 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
         private const string UnhealthyImage = "WebApi.HealthChecks.Content.status-unhealthy-red.svg";
         private const string DegradedImage = "WebApi.HealthChecks.Content.status-degraded-lightgrey.svg";
 
-        private readonly HealthChecksBuilder _healthChecksBuilder;
+        private readonly IHealthCheckService _healthCheckService;
         
-        public HealthUiHandler(HealthChecksBuilder healthChecksBuilder)
+        public HealthUiHandler(IHealthCheckService healthCheckService)
         {
-            _healthChecksBuilder = healthChecksBuilder;
+            _healthCheckService = healthCheckService;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -30,7 +31,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
             if (queryParameters.TryGetValue("check", out var check))
             {
-                var healthResult = await _healthChecksBuilder.GetHealthAsync(check);
+                var healthResult = await _healthCheckService.GetHealthAsync(check);
 
                 if (healthResult == null)
                 {
@@ -41,7 +42,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
             }
             else
             {
-                var result = await _healthChecksBuilder.GetHealthAsync();
+                var result = await _healthCheckService.GetHealthAsync();
                 status = result.Status;
             }
 

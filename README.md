@@ -20,6 +20,7 @@ public static class WebApiConfig
     public static void Register(HttpConfiguration config)
     {
         config.AddHealthChecks()
+            .OverrideResultStatusCodes(unhealthy: HttpStatusCode.InternalServerError)
             .AddCheck("sqlDb", new SqlHealthCheck())
             .AddCheck("cosmosDb", new CosmosDbHealthCheck());
     }

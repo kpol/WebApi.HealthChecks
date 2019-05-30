@@ -5,12 +5,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Kirill Polishchuk</Authors>
     <Company />
-    <Version>1.4.0</Version>
+    <Version>1.5.0</Version>
     <PackageProjectUrl>https://github.com/kpol/WebApi.HealthChecks</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kpol/WebApi.HealthChecks</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>web, web-api, health</PackageTags>
+    <PackageTags>web, web-api, health, health-check</PackageTags>
     <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <Description>WebApi implementation of the health check endpoints for reporting the health of app infrastructure components.</Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using WebApi.HealthChecks.Models;
 
-// ReSharper disable once CheckNamespace
 namespace WebApi.HealthChecks
 {
     public class HealthChecksBuilder
@@ -18,9 +18,27 @@ namespace WebApi.HealthChecks
 
         }
 
+        internal IDictionary<HealthStatus, HttpStatusCode> ResultStatusCodes { get; } =
+            new Dictionary<HealthStatus, HttpStatusCode>
+            {
+                {HealthStatus.Healthy, HttpStatusCode.OK},
+                {HealthStatus.Degraded, HttpStatusCode.OK},
+                {HealthStatus.Unhealthy, HttpStatusCode.ServiceUnavailable}
+            };
+
         public HealthChecksBuilder AddCheck(string name, IHealthCheck healthCheck)
         {
             _healthChecks.Add(name, healthCheck);
+
+            return this;
+        }
+
+        public HealthChecksBuilder OverrideResultStatusCodes(HttpStatusCode healthy = HttpStatusCode.OK,
+            HttpStatusCode degraded = HttpStatusCode.OK, HttpStatusCode unhealthy = HttpStatusCode.ServiceUnavailable)
+        {
+            ResultStatusCodes[HealthStatus.Healthy] = healthy;
+            ResultStatusCodes[HealthStatus.Degraded] = degraded;
+            ResultStatusCodes[HealthStatus.Unhealthy] = unhealthy;
 
             return this;
         }

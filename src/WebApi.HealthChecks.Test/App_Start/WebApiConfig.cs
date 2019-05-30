@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Web.Http;
 using WebApi.HealthChecks.Test.Implementations;
 
 namespace WebApi.HealthChecks.Test
@@ -9,6 +10,7 @@ namespace WebApi.HealthChecks.Test
         {
             config
                 .AddHealthChecks()
+                .OverrideResultStatusCodes(unhealthy: HttpStatusCode.InternalServerError)
                 .AddCheck("check1", new HealthyCheck())
                 .AddCheck("check2", new UnhealthyCheck())
                 .AddCheck("check3", new ExceptionHealthCheck())

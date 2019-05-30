@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-// ReSharper disable once CheckNamespace
 namespace WebApi.HealthChecks
 {
     [JsonConverter(typeof(StringEnumConverter))]

@@ -9,7 +9,7 @@ using WebApi.HealthChecks.Models;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
-    public class HealthHandler : HttpMessageHandler
+    internal class HealthHandler : HttpMessageHandler
     {
         private readonly HealthChecksBuilder _healthChecksBuilder;
 
@@ -25,15 +25,18 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (request.Method != HttpMethod.Get)
+            {
+                throw new HttpRequestException("The method accepts only GET requests.");
+            }
+
             var result = await _healthChecksBuilder.GetHealthAsync();
 
             var httpResponseMessage = new HttpResponseMessage
             {
                 Content = new ObjectContent<HealthCheckResults>(result,
                     new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings}),
-                StatusCode = result.Status == HealthStatus.Healthy
-                    ? HttpStatusCode.OK
-                    : HttpStatusCode.ServiceUnavailable
+                StatusCode = _healthChecksBuilder.ResultStatusCodes[result.Status]
             };
 
             return httpResponseMessage;

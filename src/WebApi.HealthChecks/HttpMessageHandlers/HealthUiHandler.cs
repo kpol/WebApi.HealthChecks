@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
-    public class HealthUiHandler : HttpMessageHandler
+    internal class HealthUiHandler : HttpMessageHandler
     {
         private const string HealthyImage = "WebApi.HealthChecks.Content.status-healthy-green.svg";
         private const string UnhealthyImage = "WebApi.HealthChecks.Content.status-unhealthy-red.svg";

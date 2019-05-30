@@ -1,7 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-// ReSharper disable once CheckNamespace
 namespace WebApi.HealthChecks
 {
     public class HealthCheckResult

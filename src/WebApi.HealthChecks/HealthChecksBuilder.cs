@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using WebApi.HealthChecks.Models;
 
 namespace WebApi.HealthChecks
 {
@@ -25,6 +26,13 @@ namespace WebApi.HealthChecks
         public HealthChecksBuilder AddCheck(string name, IHealthCheck healthCheck)
         {
             HealthChecks.Add(name, healthCheck);
+
+            return this;
+        }
+
+        public HealthChecksBuilder AddCheck(string name, Func<HealthCheckResult> check)
+        {
+            HealthChecks.Add(name, new LambdaHealthCheck(check));
 
             return this;
         }

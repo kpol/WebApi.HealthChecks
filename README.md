@@ -1,8 +1,9 @@
 # WebApi.HealthChecks
 
-WebApi.HealthChecks offers a **WebApi** implementation of the health check endpoints for reporting the health of app infrastructure components.
-
 [![Build status](https://ci.appveyor.com/api/projects/status/1g00xtolkwtlt6kh?svg=true)](https://ci.appveyor.com/project/kpol/webapi-healthchecks)
+[![Nuget](https://img.shields.io/nuget/v/WebApi.HealthChecks.svg)](https://www.nuget.org/packages/WebApi.HealthChecks)
+
+WebApi.HealthChecks offers a **WebApi** implementation of the health check endpoints for reporting the health of app infrastructure components.
 
 The package is available on [**NuGet**](https://nuget.org/packages/WebApi.HealthChecks)
 

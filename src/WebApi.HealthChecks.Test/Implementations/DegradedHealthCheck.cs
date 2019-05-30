@@ -6,7 +6,7 @@ namespace WebApi.HealthChecks.Test.Implementations
     {
         public async Task<HealthCheckResult> CheckHealthAsync()
         {
-            return await Task.FromResult<HealthCheckResult>(new HealthCheckResult(HealthStatus.Degraded));
+            return await Task.FromResult(new HealthCheckResult(HealthStatus.Degraded));
         }
     }
 }

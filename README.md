@@ -50,6 +50,11 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
     "cosmosDb": {
       "responseTime": 5,
       "status": "Degraded"
+    },
+    "lambda": {
+      "responseTime": 0,
+      "status": "Healthy",
+       "description": "Lambda check"
     }
   }
 }

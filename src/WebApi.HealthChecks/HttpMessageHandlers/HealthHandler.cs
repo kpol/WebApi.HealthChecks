@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading;
@@ -31,32 +33,34 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 throw new HttpRequestException("The method accepts only GET requests.");
             }
 
-            var routeData = request.GetRouteData();
+            var queryParameters = request.GetQueryNameValuePairs()
+                .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
 
-            if (routeData.Values.TryGetValue("check", out var check))
+            if (queryParameters.TryGetValue("check", out var check) && !string.IsNullOrEmpty(check))
             {
-                var healthResult = await _healthCheckService.GetHealthAsync((string) check);
+                var healthResult = await _healthCheckService.GetHealthAsync(check);
 
                 if (healthResult == null)
                 {
-                    throw new InvalidOperationException($"Health check '{check}' is not configured.");
+                    return new HttpResponseMessage(HttpStatusCode.NotFound)
+                    {
+                        Content = new StringContent($"Health check '{check}' is not configured.")
+                    };
                 }
 
-                return new HttpResponseMessage
+                return new HttpResponseMessage(_healthCheckService.GetStatusCode(healthResult.Status))
                 {
                     Content = new ObjectContent<HealthCheckResultExtended>(healthResult,
-                        new JsonMediaTypeFormatter { SerializerSettings = _serializerSettings }),
-                    StatusCode = _healthCheckService.GetStatusCode(healthResult.Status)
+                        new JsonMediaTypeFormatter { SerializerSettings = _serializerSettings })
                 };
             }
 
             var result = await _healthCheckService.GetHealthAsync();
 
-            return new HttpResponseMessage
+            return new HttpResponseMessage(_healthCheckService.GetStatusCode(result.Status))
             {
                 Content = new ObjectContent<HealthCheckResults>(result,
-                    new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings}),
-                StatusCode = _healthCheckService.GetStatusCode(result.Status)
+                    new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings})
             };
         }
     }

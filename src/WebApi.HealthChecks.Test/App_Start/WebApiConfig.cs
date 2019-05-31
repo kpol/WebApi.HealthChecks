@@ -15,7 +15,7 @@ namespace WebApi.HealthChecks.Test
                 .AddCheck("check2", new UnhealthyCheck())
                 .AddCheck("check3", new ExceptionHealthCheck())
                 .AddCheck("check4", new DegradedHealthCheck())
-                .AddCheck("check5", () => new HealthCheckResult(HealthStatus.Healthy, "Lambda check"));
+                .AddCheck("ui", () => new HealthCheckResult(HealthStatus.Healthy, "Lambda check"));
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -28,17 +30,21 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 throw new HttpRequestException("The method accepts only GET requests.");
             }
 
-            var routeData = request.GetRouteData();
+            var queryParameters = request.GetQueryNameValuePairs()
+                .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
 
             HealthStatus status;
 
-            if (routeData.Values.TryGetValue("check", out var check))
+            if (queryParameters.TryGetValue("check", out var check) && !string.IsNullOrEmpty(check))
             {
-                var healthResult = await _healthCheckService.GetHealthAsync((string)check);
+                var healthResult = await _healthCheckService.GetHealthAsync(check);
 
                 if (healthResult == null)
                 {
-                    throw new InvalidOperationException($"Health check '{check}' is not configured.");
+                    return new HttpResponseMessage(HttpStatusCode.NotFound)
+                    {
+                        Content = new StringContent($"Health check '{check}' is not configured.")
+                    };
                 }
 
                 status = healthResult.Status;

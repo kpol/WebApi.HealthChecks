@@ -18,12 +18,12 @@ namespace WebApi.HealthChecks
                 handler: new HealthHandler(new HealthCheckService(healthChecksBuilder))
             );
 
-            var ui = routeTemplate + (routeTemplate.EndsWith("/") ? string.Empty : "/") + "ui";
+            var ui = routeTemplate + (routeTemplate.EndsWith("/") ? string.Empty : "/") + "ui/{check}";
 
             httpConfiguration.Routes.MapHttpRoute(
                 name: "health_check_ui",
                 routeTemplate: ui,
-                defaults: null,
+                defaults: new {check = RouteParameter.Optional},
                 constraints: null,
                 handler: new HealthUiHandler(new HealthCheckService(healthChecksBuilder))
             );

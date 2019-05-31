@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -24,14 +23,13 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var queryParameters = request.GetQueryNameValuePairs()
-                .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
+            var routeData = request.GetRouteData();
 
             HealthStatus status;
 
-            if (queryParameters.TryGetValue("check", out var check))
+            if (routeData.Values.TryGetValue("check", out var check))
             {
-                var healthResult = await _healthCheckService.GetHealthAsync(check);
+                var healthResult = await _healthCheckService.GetHealthAsync((string)check);
 
                 if (healthResult == null)
                 {

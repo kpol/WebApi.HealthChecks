@@ -11,8 +11,8 @@ The package is available on [**NuGet**](https://nuget.org/packages/WebApi.Health
 
 Health checks are exposed by an app as HTTP endpoints.
 Supports two endpoints: 
-- `GET /health?check=:check` where `check` is optional
-- `GET /health/ui?check=:check` where `check` is optional
+- `GET /health?check=:check` *where `check` is optional*
+- `GET /health/ui?check=:check` *where `check` is optional*
 
 
 By default the health check endpoint is created at `/health`

@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Kirill Polishchuk</Authors>
     <Company />
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
     <PackageProjectUrl>https://github.com/kpol/WebApi.HealthChecks</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kpol/WebApi.HealthChecks</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>

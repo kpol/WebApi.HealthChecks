@@ -23,6 +23,11 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (request.Method != HttpMethod.Get)
+            {
+                throw new HttpRequestException("The method accepts only GET requests.");
+            }
+
             var routeData = request.GetRouteData();
 
             HealthStatus status;

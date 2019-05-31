@@ -68,7 +68,7 @@ namespace WebApi.HealthChecks.Services
             return healthCheckResults;
         }
 
-        public async Task<HealthCheckResult> GetHealthAsync(string healthCheckName)
+        public async Task<HealthCheckResultExtended> GetHealthAsync(string healthCheckName)
         {
             if (!_healthChecksBuilder.HealthChecks.TryGetValue(healthCheckName, out var healthCheck))
             {
@@ -77,13 +77,18 @@ namespace WebApi.HealthChecks.Services
 
             try
             {
+                var sw = new Stopwatch();
+                sw.Start();
+
                 var result = await healthCheck.CheckHealthAsync();
 
-                return result;
+                sw.Stop();
+
+                return new HealthCheckResultExtended(result) {ResponseTime = sw.ElapsedMilliseconds};
             }
             catch
             {
-                return new HealthCheckResult(HealthStatus.Unhealthy);
+                return new HealthCheckResultExtended(new HealthCheckResult(HealthStatus.Unhealthy));
             }
         }
     }

@@ -6,26 +6,26 @@ namespace WebApi.HealthChecks
 {
     public static class HttpConfigurationExtensions
     {
-        public static HealthChecksBuilder AddHealthChecks(this HttpConfiguration httpConfiguration, string routeTemplate = "health")
+        public static HealthChecksBuilder AddHealthChecks(this HttpConfiguration httpConfiguration, string root = "health")
         {
             var healthChecksBuilder = new HealthChecksBuilder();
 
-            httpConfiguration.Routes.MapHttpRoute(
-                name: "health_check",
-                routeTemplate: routeTemplate,
-                defaults: null,
-                constraints: null,
-                handler: new HealthHandler(new HealthCheckService(healthChecksBuilder))
-            );
-
-            var ui = routeTemplate + (routeTemplate.EndsWith("/") ? string.Empty : "/") + "ui/{check}";
+            var route = root + (root.EndsWith("/") ? string.Empty : "/");
 
             httpConfiguration.Routes.MapHttpRoute(
                 name: "health_check_ui",
-                routeTemplate: ui,
-                defaults: new {check = RouteParameter.Optional},
+                routeTemplate: route + "ui/{check}",
+                defaults: new { check = RouteParameter.Optional },
                 constraints: null,
                 handler: new HealthUiHandler(new HealthCheckService(healthChecksBuilder))
+            );
+
+            httpConfiguration.Routes.MapHttpRoute(
+                name: "health_check",
+                routeTemplate: route + "{check}",
+                defaults: new { check = RouteParameter.Optional },
+                constraints: null,
+                handler: new HealthHandler(new HealthCheckService(healthChecksBuilder))
             );
 
             return healthChecksBuilder;

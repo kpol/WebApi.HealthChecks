@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,16 +31,33 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 throw new HttpRequestException("The method accepts only GET requests.");
             }
 
+            var routeData = request.GetRouteData();
+
+            if (routeData.Values.TryGetValue("check", out var check))
+            {
+                var healthResult = await _healthCheckService.GetHealthAsync((string) check);
+
+                if (healthResult == null)
+                {
+                    throw new InvalidOperationException($"Health check '{check}' is not configured.");
+                }
+
+                return new HttpResponseMessage
+                {
+                    Content = new ObjectContent<HealthCheckResultExtended>(healthResult,
+                        new JsonMediaTypeFormatter { SerializerSettings = _serializerSettings }),
+                    StatusCode = _healthCheckService.GetStatusCode(healthResult.Status)
+                };
+            }
+
             var result = await _healthCheckService.GetHealthAsync();
 
-            var httpResponseMessage = new HttpResponseMessage
+            return new HttpResponseMessage
             {
                 Content = new ObjectContent<HealthCheckResults>(result,
                     new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings}),
                 StatusCode = _healthCheckService.GetStatusCode(result.Status)
             };
-
-            return httpResponseMessage;
         }
     }
 }

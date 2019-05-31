@@ -103,11 +103,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\WebApi.HealthChecks\WebApi.HealthChecks.csproj">
       <Project>{8474be3a-e5b4-4e6b-a9bc-bdbf28466b52}</Project>

@@ -10,6 +10,6 @@ namespace WebApi.HealthChecks.Services
 
         Task<HealthCheckResults> GetHealthAsync();
 
-        Task<HealthCheckResult> GetHealthAsync(string healthCheckName);
+        Task<HealthCheckResultExtended> GetHealthAsync(string healthCheckName);
     }
 }

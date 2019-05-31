@@ -12,7 +12,7 @@ The package is available on [**NuGet**](https://nuget.org/packages/WebApi.Health
 Health checks are exposed by an app as HTTP endpoints.
 Supports two endpoints: 
 - `/health`
-- `/health/ui?check=:check`
+- `/health/ui/:check`
 
 
 By default the health check endpoint is created at `/health`
@@ -61,5 +61,5 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
   }
 }
 ```
-The `/health/ui?check=:check` endpoint returns a SVG badge which shows individual status of the service component.
-For example `/health/ui?check=cosmosDb` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)
+The `/health/ui/:check` endpoint returns a SVG badge which shows individual status of the service component.
+For example `/health/ui/cosmosDb` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)

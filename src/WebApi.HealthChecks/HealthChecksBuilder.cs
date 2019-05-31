@@ -13,7 +13,7 @@ namespace WebApi.HealthChecks
         }
 
         internal IDictionary<HealthStatus, HttpStatusCode> ResultStatusCodes { get; } =
-            new Dictionary<HealthStatus, HttpStatusCode>
+            new Dictionary<HealthStatus, HttpStatusCode>(3)
             {
                 {HealthStatus.Healthy, HttpStatusCode.OK},
                 {HealthStatus.Degraded, HttpStatusCode.OK},

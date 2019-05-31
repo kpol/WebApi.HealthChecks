@@ -61,5 +61,5 @@ The framework supports three statuses: `Unhealthy` , `Degraded` and `Healthy`.
   }
 }
 ```
-The `/health/ui?check={check-name}` endpoint returns a SVG badge which shows individual status of the service component.
+The `/health/ui?check=:check` endpoint returns a SVG badge which shows individual status of the service component.
 For example `/health/ui?check=cosmosDb` will output this image: ![degraded](/src/WebApi.HealthChecks/Content/status-degraded-lightgrey.svg)

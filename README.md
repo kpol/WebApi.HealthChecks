@@ -23,8 +23,8 @@ public static class WebApiConfig
     {
         config.AddHealthChecks()
             .OverrideResultStatusCodes(unhealthy: HttpStatusCode.InternalServerError)
-            .AddCheck("sqlDb", new SqlHealthCheck())
-            .AddCheck("cosmosDb", new CosmosDbHealthCheck())
+            .AddCheck("sqlDb", new SqlHealthCheck()) // Singleton instance
+            .AddCheck<ICosmosDbCheck>("cosmosDb") // needs to be registered in DependencyResolver
             .AddCheck("lambda", () => new HealthCheckResult(HealthStatus.Healthy, "Lambda check"));
     }
 }

@@ -6,21 +6,21 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
 using WebApi.HealthChecks.Services;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
-    internal class HealthUiHandler : HttpMessageHandler
+    internal class HealthUiHandler : HealthHandlerBase
     {
         private const string HealthyImage = "WebApi.HealthChecks.Content.status-healthy-green.svg";
         private const string UnhealthyImage = "WebApi.HealthChecks.Content.status-unhealthy-red.svg";
         private const string DegradedImage = "WebApi.HealthChecks.Content.status-degraded-lightgrey.svg";
 
-        private readonly IHealthCheckService _healthCheckService;
-        
-        public HealthUiHandler(IHealthCheckService healthCheckService)
+
+        public HealthUiHandler(HttpConfiguration httpConfiguration, HealthChecksBuilder healthChecksBuilder) : base(
+            httpConfiguration, healthChecksBuilder)
         {
-            _healthCheckService = healthCheckService;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -30,6 +30,9 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 throw new HttpRequestException("The method accepts only GET requests.");
             }
 
+            var healthChecks = GetHealthChecks();
+            var service = new HealthCheckService(healthChecks, HealthChecksBuilder.ResultStatusCodes);
+
             var queryParameters = request.GetQueryNameValuePairs()
                 .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
 
@@ -37,7 +40,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
             if (queryParameters.TryGetValue("check", out var check) && !string.IsNullOrEmpty(check))
             {
-                var healthResult = await _healthCheckService.GetHealthAsync(check);
+                var healthResult = await service.GetHealthAsync(check);
 
                 if (healthResult == null)
                 {
@@ -51,7 +54,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
             }
             else
             {
-                var result = await _healthCheckService.GetHealthAsync();
+                var result = await service.GetHealthAsync();
                 status = result.Status;
             }
 

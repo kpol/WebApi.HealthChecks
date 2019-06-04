@@ -20,19 +20,26 @@ namespace WebApi.HealthChecks
                 {HealthStatus.Unhealthy, HttpStatusCode.ServiceUnavailable}
             };
 
-        internal IDictionary<string, IHealthCheck> HealthChecks { get; } =
-            new Dictionary<string, IHealthCheck>(StringComparer.OrdinalIgnoreCase);
+        internal IDictionary<string, Registration> HealthChecks { get; } =
+            new Dictionary<string, Registration>(StringComparer.OrdinalIgnoreCase);
 
         public HealthChecksBuilder AddCheck(string name, IHealthCheck healthCheck)
         {
-            HealthChecks.Add(name, healthCheck);
+            HealthChecks.Add(name, new Registration(healthCheck));
+
+            return this;
+        }
+
+        public HealthChecksBuilder AddCheck<T>(string name) where T : IHealthCheck
+        {
+            HealthChecks.Add(name, new Registration(typeof(T)));
 
             return this;
         }
 
         public HealthChecksBuilder AddCheck(string name, Func<HealthCheckResult> check)
         {
-            HealthChecks.Add(name, new LambdaHealthCheck(check));
+            HealthChecks.Add(name, new Registration(new LambdaHealthCheck(check)));
 
             return this;
         }
@@ -46,5 +53,26 @@ namespace WebApi.HealthChecks
 
             return this;
         }
+    }
+
+    internal class Registration
+    {
+        public Registration(IHealthCheck instance)
+        {
+            Instance = instance;
+            IsSingleton = true;
+        }
+
+        public Registration(Type type)
+        {
+            Type = type;
+            IsSingleton = false;
+        }
+
+        public IHealthCheck Instance { get; }
+
+        public Type Type { get; set; }
+
+        public bool IsSingleton { get; }
     }
 }

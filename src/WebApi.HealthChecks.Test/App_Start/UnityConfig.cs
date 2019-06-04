@@ -1,6 +1,7 @@
 using System;
 
 using Unity;
+using WebApi.HealthChecks.Test.Services;
 
 namespace WebApi.HealthChecks.Test
 {
@@ -42,6 +43,8 @@ namespace WebApi.HealthChecks.Test
 
             // TODO: Register your type's mappings here.
             // container.RegisterType<IProductRepository, ProductRepository>();
+
+            container.RegisterType<ICosmosClient, CosmosClient>();
         }
     }
 }

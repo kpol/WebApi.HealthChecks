@@ -15,7 +15,7 @@ namespace WebApi.HealthChecks
                 routeTemplate: root,
                 defaults: new { check = RouteParameter.Optional },
                 constraints: null,
-                handler: new HealthHandler(new HealthCheckService(healthChecksBuilder))
+                handler: new HealthHandler(httpConfiguration, healthChecksBuilder)
             );
 
             var ui = root + (root.EndsWith("/") ? string.Empty : "/") + "ui";
@@ -25,7 +25,7 @@ namespace WebApi.HealthChecks
                 routeTemplate: ui,
                 defaults: new { check = RouteParameter.Optional },
                 constraints: null,
-                handler: new HealthUiHandler(new HealthCheckService(healthChecksBuilder))
+                handler: new HealthUiHandler(httpConfiguration, healthChecksBuilder)
             );
 
             return healthChecksBuilder;

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.HealthChecks.Models;
@@ -12,33 +13,35 @@ using WebApi.HealthChecks.Services;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
-    internal class HealthHandler : HttpMessageHandler
+    internal class HealthHandler : HealthHandlerBase
     {
-        private readonly IHealthCheckService _healthCheckService;
-
         private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
-        public HealthHandler(IHealthCheckService healthCheckService)
+        public HealthHandler(HttpConfiguration httpConfiguration, HealthChecksBuilder healthChecksBuilder) : base(
+            httpConfiguration, healthChecksBuilder)
         {
-            _healthCheckService = healthCheckService;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             if (request.Method != HttpMethod.Get)
             {
                 throw new HttpRequestException("The method accepts only GET requests.");
             }
 
+            var healthChecks = GetHealthChecks();
+            var service = new HealthCheckService(healthChecks, HealthChecksBuilder.ResultStatusCodes);
+
             var queryParameters = request.GetQueryNameValuePairs()
                 .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
 
             if (queryParameters.TryGetValue("check", out var check) && !string.IsNullOrEmpty(check))
             {
-                var healthResult = await _healthCheckService.GetHealthAsync(check);
+                var healthResult = await service.GetHealthAsync(check);
 
                 if (healthResult == null)
                 {
@@ -48,16 +51,16 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                     };
                 }
 
-                return new HttpResponseMessage(_healthCheckService.GetStatusCode(healthResult.Status))
+                return new HttpResponseMessage(service.GetStatusCode(healthResult.Status))
                 {
                     Content = new ObjectContent<HealthCheckResultExtended>(healthResult,
-                        new JsonMediaTypeFormatter { SerializerSettings = _serializerSettings })
+                        new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings})
                 };
             }
 
-            var result = await _healthCheckService.GetHealthAsync();
+            var result = await service.GetHealthAsync();
 
-            return new HttpResponseMessage(_healthCheckService.GetStatusCode(result.Status))
+            return new HttpResponseMessage(service.GetStatusCode(result.Status))
             {
                 Content = new ObjectContent<HealthCheckResults>(result,
                     new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings})

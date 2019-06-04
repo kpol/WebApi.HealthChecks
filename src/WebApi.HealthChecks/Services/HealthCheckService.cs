@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -6,25 +7,27 @@ using WebApi.HealthChecks.Models;
 
 namespace WebApi.HealthChecks.Services
 {
-    internal class HealthCheckService : IHealthCheckService
+    internal class HealthCheckService
     {
-        private readonly HealthChecksBuilder _healthChecksBuilder;
+        private readonly IDictionary<string, IHealthCheck> _healthChecks;
+        private readonly IDictionary<HealthStatus, HttpStatusCode> _resultStatusCodes;
 
-        public HealthCheckService(HealthChecksBuilder healthChecksBuilder)
+        public HealthCheckService(IDictionary<string, IHealthCheck> healthChecks, IDictionary<HealthStatus, HttpStatusCode> resultStatusCodes)
         {
-            _healthChecksBuilder = healthChecksBuilder;
+            _healthChecks = healthChecks;
+            _resultStatusCodes = resultStatusCodes;
         }
 
         public HttpStatusCode GetStatusCode(HealthStatus healthStatus)
         {
-            return _healthChecksBuilder.ResultStatusCodes[healthStatus];
+            return _resultStatusCodes[healthStatus];
         }
 
         public async Task<HealthCheckResults> GetHealthAsync()
         {
             var healthCheckResults = new HealthCheckResults();
 
-            var tasks = _healthChecksBuilder.HealthChecks.Select(c => new { name = c.Key, result = c.Value.CheckHealthAsync() });
+            var tasks = _healthChecks.Select(c => new { name = c.Key, result = c.Value.CheckHealthAsync() });
 
             var sw = new Stopwatch();
 
@@ -70,7 +73,7 @@ namespace WebApi.HealthChecks.Services
 
         public async Task<HealthCheckResultExtended> GetHealthAsync(string healthCheckName)
         {
-            if (!_healthChecksBuilder.HealthChecks.TryGetValue(healthCheckName, out var healthCheck))
+            if (!_healthChecks.TryGetValue(healthCheckName, out var healthCheck))
             {
                 return null;
             }

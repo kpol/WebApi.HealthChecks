@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -23,13 +22,8 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
         {
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (request.Method != HttpMethod.Get)
-            {
-                throw new HttpRequestException("The method accepts only GET requests.");
-            }
-
             var healthChecks = GetHealthChecks();
             var service = new HealthCheckService(healthChecks, HealthChecksBuilder.ResultStatusCodes);
 
@@ -44,10 +38,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
                 if (healthResult == null)
                 {
-                    return new HttpResponseMessage(HttpStatusCode.NotFound)
-                    {
-                        Content = new StringContent($"Health check '{check}' is not configured.")
-                    };
+                    return CheckNotFound(check);
                 }
 
                 status = healthResult.Status;

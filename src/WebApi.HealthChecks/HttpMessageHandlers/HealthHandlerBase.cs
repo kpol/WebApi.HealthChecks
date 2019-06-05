@@ -1,6 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using WebApi.HealthChecks.Models;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
@@ -14,7 +21,25 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
             HealthChecksBuilder = healthChecksBuilder;
         }
 
+        protected JsonSerializerSettings SerializerSettings { get; } = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
         protected HealthChecksBuilder HealthChecksBuilder { get; }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            // only accepting GET
+            if (request.Method != HttpMethod.Get)
+            {
+                throw new HttpRequestException("The method accepts only GET requests.");
+            }
+
+            return await GetResponseAsync(request, cancellationToken);
+        }
+
+        protected abstract Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken);
 
         protected IDictionary<string, IHealthCheck> GetHealthChecks()
         {
@@ -30,7 +55,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                     }
                     else
                     {
-                        var instance = (IHealthCheck) dependencyScope.GetService(registration.Value.Type);
+                        var instance = (IHealthCheck)dependencyScope.GetService(registration.Value.Type);
 
                         result.Add(registration.Key, instance);
                     }
@@ -39,5 +64,13 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 return result;
             }
         }
+
+        protected HttpResponseMessage CheckNotFound(string check)
+            => new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new ObjectContent<ErrorResponse>(
+                    new ErrorResponse {Error = $"Health check '{check}' is not configured."},
+                    new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings})
+            };
     }
 }

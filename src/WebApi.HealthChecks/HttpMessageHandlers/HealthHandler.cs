@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using WebApi.HealthChecks.Models;
 using WebApi.HealthChecks.Services;
 
@@ -15,24 +12,14 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 {
     internal class HealthHandler : HealthHandlerBase
     {
-        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
-
         public HealthHandler(HttpConfiguration httpConfiguration, HealthChecksBuilder healthChecksBuilder) : base(
             httpConfiguration, healthChecksBuilder)
         {
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        protected override async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            if (request.Method != HttpMethod.Get)
-            {
-                throw new HttpRequestException("The method accepts only GET requests.");
-            }
-
             var healthChecks = GetHealthChecks();
             var service = new HealthCheckService(healthChecks, HealthChecksBuilder.ResultStatusCodes);
 
@@ -45,16 +32,13 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
                 if (healthResult == null)
                 {
-                    return new HttpResponseMessage(HttpStatusCode.NotFound)
-                    {
-                        Content = new StringContent($"Health check '{check}' is not configured.")
-                    };
+                    return CheckNotFound(check);
                 }
 
                 return new HttpResponseMessage(service.GetStatusCode(healthResult.Status))
                 {
                     Content = new ObjectContent<HealthCheckResultExtended>(healthResult,
-                        new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings})
+                        new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings })
                 };
             }
 
@@ -63,7 +47,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
             return new HttpResponseMessage(service.GetStatusCode(result.Status))
             {
                 Content = new ObjectContent<HealthCheckResults>(result,
-                    new JsonMediaTypeFormatter {SerializerSettings = _serializerSettings})
+                    new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings })
             };
         }
     }

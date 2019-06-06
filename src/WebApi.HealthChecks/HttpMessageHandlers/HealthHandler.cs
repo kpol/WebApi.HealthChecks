@@ -42,7 +42,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 };
             }
 
-            var result = await service.GetHealthAsync();
+            var result = await service.GetHealthAsync(cancellationToken);
 
             return new HttpResponseMessage(service.GetStatusCode(result.Status))
             {

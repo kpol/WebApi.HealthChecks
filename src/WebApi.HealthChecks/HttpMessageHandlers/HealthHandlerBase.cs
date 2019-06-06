@@ -11,7 +11,7 @@ using WebApi.HealthChecks.Models;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
 {
-    internal abstract class HealthHandlerBase : HttpMessageHandler
+    internal abstract class HealthHandlerBase : DelegatingHandler
     {
         private readonly HttpConfiguration _httpConfiguration;
 

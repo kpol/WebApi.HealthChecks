@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApi.HealthChecks.Models;
 
@@ -23,11 +25,12 @@ namespace WebApi.HealthChecks.Services
             return _resultStatusCodes[healthStatus];
         }
 
-        public async Task<HealthCheckResults> GetHealthAsync()
+        public async Task<HealthCheckResults> GetHealthAsync(
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var healthCheckResults = new HealthCheckResults();
 
-            var tasks = _healthChecks.Select(c => new { name = c.Key, result = c.Value.CheckHealthAsync() });
+            var tasks = _healthChecks.Select(c => new {name = c.Key, result = c.Value.CheckHealthAsync()});
 
             var sw = new Stopwatch();
 
@@ -35,12 +38,18 @@ namespace WebApi.HealthChecks.Services
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     sw.Reset();
                     sw.Start();
                     var result = await task.result;
                     sw.Stop();
                     healthCheckResults.Entries.Add(task.name,
-                        new HealthCheckResultExtended(result) { ResponseTime = sw.ElapsedMilliseconds });
+                        new HealthCheckResultExtended(result) {ResponseTime = sw.ElapsedMilliseconds});
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch
                 {

@@ -10,6 +10,7 @@ namespace WebApi.HealthChecks.Test
         {
             config
                 .AddHealthChecks()
+                .Configure(addWarningHeader: true)
                 .OverrideResultStatusCodes(unhealthy: HttpStatusCode.InternalServerError)
                 .AddCheck("check1", new HealthyCheck())
                 .AddCheck("check2", new UnhealthyCheck())

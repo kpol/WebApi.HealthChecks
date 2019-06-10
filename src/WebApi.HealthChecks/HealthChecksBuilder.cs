@@ -23,6 +23,8 @@ namespace WebApi.HealthChecks
         internal IDictionary<string, Registration> HealthChecks { get; } =
             new Dictionary<string, Registration>(StringComparer.OrdinalIgnoreCase);
 
+        internal bool AddWarningHeader { get; private set; } = true;
+
         public HealthChecksBuilder AddCheck(string name, IHealthCheck healthCheck)
         {
             HealthChecks.Add(name, new Registration(healthCheck));
@@ -50,6 +52,13 @@ namespace WebApi.HealthChecks
             ResultStatusCodes[HealthStatus.Healthy] = healthy;
             ResultStatusCodes[HealthStatus.Degraded] = degraded;
             ResultStatusCodes[HealthStatus.Unhealthy] = unhealthy;
+
+            return this;
+        }
+
+        public HealthChecksBuilder Configure(bool addWarningHeader)
+        {
+            AddWarningHeader = addWarningHeader;
 
             return this;
         }

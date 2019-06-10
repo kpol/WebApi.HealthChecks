@@ -76,13 +76,18 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
 
         protected void AddWarningHeaderIfNeeded(HttpResponseMessage responseMessage, HealthStatus healthStatus)
         {
-            if (healthStatus == HealthStatus.Degraded)
+            if (HealthChecksBuilder.AddWarningHeader)
             {
-                responseMessage.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Degraded\""));
-            }
-            else if (healthStatus == HealthStatus.Unhealthy)
-            {
-                responseMessage.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Unhealthy\""));
+                if (healthStatus == HealthStatus.Degraded)
+                {
+                    responseMessage.Headers.Warning.Add(new WarningHeaderValue(199, "health-check",
+                        "\"Status is Degraded\""));
+                }
+                else if (healthStatus == HealthStatus.Unhealthy)
+                {
+                    responseMessage.Headers.Warning.Add(new WarningHeaderValue(199, "health-check",
+                        "\"Status is Unhealthy\""));
+                }
             }
         }
     }

@@ -21,7 +21,7 @@ public static class WebApiConfig
 {
     public static void Register(HttpConfiguration config)
     {
-        config.AddHealthChecks()
+        config.AddHealthChecks(healthEndpoint: "health")
             .Configure(addWarningHeader: true) // optional configuration
             .OverrideResultStatusCodes(unhealthy: HttpStatusCode.InternalServerError) // optional configuration
             .AddCheck("sqlDb", new SqlHealthCheck()) // Singleton instance

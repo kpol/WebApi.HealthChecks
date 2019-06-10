@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using WebApi.HealthChecks.Models;
 using WebApi.HealthChecks.Services;
 
 namespace WebApi.HealthChecks.HttpMessageHandlers
@@ -35,20 +35,32 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                     return CheckNotFound(check);
                 }
 
-                return new HttpResponseMessage(service.GetStatusCode(healthResult.Status))
-                {
-                    Content = new ObjectContent<HealthCheckResultExtended>(healthResult,
-                        new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings })
-                };
+                return GetResponse(healthResult, healthResult.Status, service);
             }
 
             var result = await service.GetHealthAsync(cancellationToken);
 
-            return new HttpResponseMessage(service.GetStatusCode(result.Status))
+            return GetResponse(result, result.Status, service);
+        }
+
+        private HttpResponseMessage GetResponse<T>(T objectContent, HealthStatus healthStatus, HealthCheckService healthCheckService)
+        {
+            var response = new HttpResponseMessage(healthCheckService.GetStatusCode(healthStatus))
             {
-                Content = new ObjectContent<HealthCheckResults>(result,
-                    new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings })
+                Content = new ObjectContent<T>(objectContent,
+                    new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings})
             };
+            
+            if (healthStatus == HealthStatus.Degraded)
+            {
+                response.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Degraded\""));
+            }
+            else if(healthStatus == HealthStatus.Unhealthy)
+            {
+                response.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Unhealthy\""));
+            }
+
+            return response;
         }
     }
 }

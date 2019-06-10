@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -72,5 +73,17 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                     new ErrorResponse {Error = $"Health check '{check}' is not configured."},
                     new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings})
             };
+
+        protected void AddWarningHeaderIfNeeded(HttpResponseMessage responseMessage, HealthStatus healthStatus)
+        {
+            if (healthStatus == HealthStatus.Degraded)
+            {
+                responseMessage.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Degraded\""));
+            }
+            else if (healthStatus == HealthStatus.Unhealthy)
+            {
+                responseMessage.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Unhealthy\""));
+            }
+        }
     }
 }

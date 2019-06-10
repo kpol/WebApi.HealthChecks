@@ -50,15 +50,8 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
                 Content = new ObjectContent<T>(objectContent,
                     new JsonMediaTypeFormatter {SerializerSettings = SerializerSettings})
             };
-            
-            if (healthStatus == HealthStatus.Degraded)
-            {
-                response.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Degraded\""));
-            }
-            else if(healthStatus == HealthStatus.Unhealthy)
-            {
-                response.Headers.Warning.Add(new WarningHeaderValue(199, "health-check", "\"Status is Unhealthy\""));
-            }
+
+            AddWarningHeaderIfNeeded(response, healthStatus);
 
             return response;
         }

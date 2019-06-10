@@ -52,7 +52,7 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
             return CreateResponse(status);
         }
 
-        private static HttpResponseMessage CreateResponse(HealthStatus status)
+        private HttpResponseMessage CreateResponse(HealthStatus status)
         {
             string imageName;
 
@@ -75,6 +75,8 @@ namespace WebApi.HealthChecks.HttpMessageHandlers
             {
                 Content = new StreamContent(assembly.GetManifestResourceStream(imageName))
             };
+
+            AddWarningHeaderIfNeeded(httpResponseMessage, status);
 
             httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("image/svg+xml");
 

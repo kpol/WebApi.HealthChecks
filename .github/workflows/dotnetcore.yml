@@ -27,7 +27,7 @@ jobs:
         with:
           dotnet-version: 3.1.102
       - name: Pack
-        run: dotnet pack ./src/*.sln --configuration Release -o package
+        run: dotnet pack ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release -o package
       - name: Publish artifact
         uses: actions/upload-artifact@v1.0.0
         with:

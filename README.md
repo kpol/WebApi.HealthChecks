@@ -1,7 +1,7 @@
 # WebApi.HealthChecks
 
 [![CI Build](https://github.com/kpol/WebApi.HealthChecks/workflows/CI%20Build/badge.svg)](https://github.com/kpol/WebApi.HealthChecks/actions)
-[![Nuget](https://img.shields.io/nuget/v/WebApi.HealthChecks.svg)](https://www.nuget.org/packages/WebApi.HealthChecks)
+[![Nuget](https://img.shields.io/nuget/v/WebApi.HealthChecks.svg?logo=nuget)](https://www.nuget.org/packages/WebApi.HealthChecks)
 
 WebApi.HealthChecks offers a **WebApi** implementation of the health check endpoints for reporting the health of app infrastructure components.
 

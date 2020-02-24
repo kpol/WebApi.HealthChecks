@@ -15,7 +15,7 @@ jobs:
     - name: Build with dotnet
       run: dotnet build ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release
     - name: Test
-      run: dotnet test ./src/*.sln
+      run: dotnet test ./src/WebApi.HealthChecks.Test/WebApi.HealthChecks.Test.csproj
         
   pack:
     runs-on: windows-latest

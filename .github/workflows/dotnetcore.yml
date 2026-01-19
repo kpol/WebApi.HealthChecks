@@ -7,27 +7,27 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.102
-    - name: Build with dotnet
-      run: dotnet build ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release
-        
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 3.1.102
+      - name: Build with dotnet
+        run: dotnet build ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release
+
   pack:
     runs-on: windows-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 3.1.102
       - name: Pack
-        run: dotnet build ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release -o package
+        run: dotnet pack ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release --output package
       - name: Publish artifact
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v3
         with:
           name: NuGet Package
           path: package

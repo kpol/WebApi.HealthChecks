@@ -27,7 +27,7 @@ jobs:
       - name: Pack
         run: dotnet pack ./src/WebApi.HealthChecks/WebApi.HealthChecks.csproj --configuration Release --output package
       - name: Publish artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: NuGet Package
           path: package

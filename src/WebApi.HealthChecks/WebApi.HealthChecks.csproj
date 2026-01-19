@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	<TargetFramework>net472</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Kirill Polishchuk</Authors>
     <Company />
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
     <PackageProjectUrl>https://github.com/kpol/WebApi.HealthChecks</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kpol/WebApi.HealthChecks</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
